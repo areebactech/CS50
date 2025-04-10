@@ -1,0 +1,66 @@
+/* Global styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+/* Header */
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 30px 0;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 3rem;
+}
+
+header p {
+    font-size: 1.25rem;
+    margin-top: 10px;
+}
+
+/* Navbar */
+.navbar {
+    background-color: #343a40;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: black !important;
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #007bff !important;
+}
+
+/* Footer */
+footer {
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}
+
+/* Skills section */
+ul.list-group {
+    padding-left: 0;
+}
+
+/* Form */
+form .form-label {
+    font-weight: bold;
+}
+
+form .form-control {
+    margin-top: 5px;
+}
+
+form .btn {
+    margin-top: 10px;
+}
