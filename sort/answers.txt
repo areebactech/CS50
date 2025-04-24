@@ -1,0 +1,20 @@
+sort1 uses: Bubble Sort
+
+How do you know?:
+reversed50,000.txt = 7.1s
+sorted50,000.txt = 1.930s
+For sorted files, sort1 is the quickest. However, compared with sorted file,
+ it take very long time to sort reversed list
+
+sort2 uses: Merge Sort
+
+How do you know?:
+reversed50,000.txt = 2.3s
+For a reversed txt file, it was exponentiolly faster comparing to other sorting programs.
+
+sort3 uses: Selection Sort
+
+How do you know?:
+reversed50,000.txt = 3.6s
+sorted50,000.txt = 4.774s
+It was the slowest in both sorted and reversed txt files.
