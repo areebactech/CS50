@@ -1,5 +1,6 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <string.h>  // for strcmp
 
 // Max number of candidates
 #define MAX 9
@@ -29,12 +30,13 @@ bool vote(int rank, string name, int ranks[]);
 void record_preferences(int ranks[]);
 void add_pairs(void);
 void sort_pairs(void);
+bool creates_cycle(int winner, int loser);
 void lock_pairs(void);
 void print_winner(void);
 
 int main(int argc, string argv[])
 {
-    // Check for invalid usa
+    // Check for invalid usage
     if (argc < 2)
     {
         printf("Usage: tideman [candidate ...]\n");
@@ -98,41 +100,132 @@ int main(int argc, string argv[])
 // Update ranks given a new vote
 bool vote(int rank, string name, int ranks[])
 {
-    // TODO
-    return false;
+    // Find candidate index by comparing name
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (strcmp(candidates[i], name) == 0)
+        {
+            ranks[rank] = i;
+            return true;
+        }
+    }
+    return false;  // name not found
 }
 
 // Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    // TODO
-    return;
+    // For each candidate i ranked higher than candidate j, increment preferences[i][j]
+    for (int i = 0; i < candidate_count; i++)
+    {
+        for (int j = i + 1; j < candidate_count; j++)
+        {
+            preferences[ranks[i]][ranks[j]]++;
+        }
+    }
 }
 
 // Record pairs of candidates where one is preferred over the other
 void add_pairs(void)
 {
-    // TODO
-    return;
+    pair_count = 0;
+    for (int i = 0; i < candidate_count; i++)
+    {
+        for (int j = i + 1; j < candidate_count; j++)
+        {
+            if (preferences[i][j] > preferences[j][i])
+            {
+                pairs[pair_count].winner = i;
+                pairs[pair_count].loser = j;
+                pair_count++;
+            }
+            else if (preferences[j][i] > preferences[i][j])
+            {
+                pairs[pair_count].winner = j;
+                pairs[pair_count].loser = i;
+                pair_count++;
+            }
+        }
+    }
 }
 
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // TODO
-    return;
+    // Simple bubble sort (or selection sort) based on victory strength
+    for (int i = 0; i < pair_count - 1; i++)
+    {
+        for (int j = i + 1; j < pair_count; j++)
+        {
+            int strength_i = preferences[pairs[i].winner][pairs[i].loser] - preferences[pairs[i].loser][pairs[i].winner];
+            int strength_j = preferences[pairs[j].winner][pairs[j].loser] - preferences[pairs[j].loser][pairs[j].winner];
+            if (strength_j > strength_i)
+            {
+                pair temp = pairs[i];
+                pairs[i] = pairs[j];
+                pairs[j] = temp;
+            }
+        }
+    }
+}
+
+// Helper function to check if locking a pair creates a cycle
+bool creates_cycle(int winner, int loser)
+{
+    // Base case: if loser points back to winner, cycle formed
+    if (loser == winner)
+    {
+        return true;
+    }
+
+    // Recursively check all candidates locked over loser
+    for (int i = 0; i < candidate_count; i++)
+    {
+        if (locked[loser][i])
+        {
+            if (creates_cycle(winner, i))
+            {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO
-    return;
+    for (int i = 0; i < pair_count; i++)
+    {
+        // Only lock pair if it doesn't create a cycle
+        if (!creates_cycle(pairs[i].winner, pairs[i].loser))
+        {
+            locked[pairs[i].winner][pairs[i].loser] = true;
+        }
+    }
 }
 
 // Print the winner of the election
 void print_winner(void)
 {
-    // TODO
-    return;
+    // The winner is the candidate with no arrows pointing to them
+    for (int i = 0; i < candidate_count; i++)
+    {
+        bool has_arrow_pointing = false;
+        for (int j = 0; j < candidate_count; j++)
+        {
+            if (locked[j][i])
+            {
+                has_arrow_pointing = true;
+                break;
+            }
+        }
+        if (!has_arrow_pointing)
+        {
+            printf("%s\n", candidates[i]);
+            return;
+        }
+    }
 }
+
